@@ -19,28 +19,32 @@ exports.adminSignUp = async (req, res) => {
             throw createCustomError("Invalid password!", 400);
         }
 
+        if(role === undefined || role === null){
+          throw createCustomError("Invalid password!", 400);
+      }
+
         const newUser = new User();
 
         newUser.name = name;
         newUser.email = email;
         newUser.password = password;
-        newUser.role = "admin";
+        newUser.role = role;
         newUser.comapny = company;
       
         await newUser.save();
       
         return res.status(201).json({
-          message: "Admin sign-up successfully!",
+          message: "Admin sign-up successfully, please sign-in!",
           newUser
         });
 }
 
 exports.adminSignIn = async (req, res) => {
 
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    if(email === null || password === undefined){
-        throw createCustomError("Email or passwrod is required!", 400);
+    if(email === null || password === undefined || role === undefined){
+        throw createCustomError("Email passwrod or role is required!", 400);
     }
 
     const user = await User.findOne({email});
@@ -54,7 +58,7 @@ exports.adminSignIn = async (req, res) => {
     }
 
     const accessToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: '1s',
+      expiresIn: '1h',
     });
 
     return res.status(201).json({

@@ -1,18 +1,18 @@
 const jwt = require("jsonwebtoken");
 
-const verifyToken = async (req, res, next) => {
+const verifyAdmin = async (req, res, next) => {
   try {
     if (req.headers.authorization === undefined) {
-      throw Error("access denied, token missing");
+      throw Error("access denied, token missing!");
     }
 
     // `Authorozation: Bearer <token>`
     if (req.headers.authorization.split(" ")[0] !== "Bearer") {
-      throw Error("access denied, provide token with Bearer convention");
+      throw Error("access denied, provide token with Bearer convention!");
     }
 
     if (req.headers.authorization.split(" ")[1] === null) {
-      throw Error("access denied, provide token cannot be null");
+      throw Error("access denied, provide token cannot be null!");
     }
 
     const token = req.headers.authorization.split(" ")[1];
@@ -23,13 +23,18 @@ const verifyToken = async (req, res, next) => {
 
     req.email = decoded.email;
 
-    next();
+    if (req.role !== 'admin') {
+      throw Error("access denied, you must be an admin!");
+  }
+  else {
+      next();
+  }
   } catch (error) {
     return res.status(400).json({
-      message: error?.message ?? "something went wrong",
+      message: error?.message ?? "something went wrong!",
     });
   }
 };
 
 
-module.exports = verifyToken;
+module.exports = verifyAdmin;

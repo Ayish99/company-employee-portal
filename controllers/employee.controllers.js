@@ -40,9 +40,9 @@ exports.employeeSignUp = async (req, res) => {
 
 exports.employeeSignIn = async (req, res) => {
 
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    if(email === null || password === undefined){
+    if(email === null || password === undefined || role === undefined){
         throw createCustomError("Email or passwrod is required!", 400);
     }
 
