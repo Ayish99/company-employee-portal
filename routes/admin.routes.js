@@ -10,7 +10,7 @@ router.post("/admin/newEmployee",verifyAdmin, addNewEmployee);
 router.post("/admin/newProject",verifyAdmin, addEmployeeToProject);
 router.delete("/admin/removeEmployee/:id",verifyAdmin, removeEmployeeFromProject);
 router.put("/admin/editEmployee",verifyAdmin, editEmployee);
-router.delete("/admin/deleteEmployee",verifyAdmin, deleteEmployee);
+router.delete("/admin/deleteEmployee/:id",verifyAdmin, deleteEmployee);
 
 
 module.exports = router;

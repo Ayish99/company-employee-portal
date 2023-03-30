@@ -165,7 +165,6 @@ exports.removeEmployeeFromProject = async (req, res) => {
 };
 
 exports.editEmployee = async (req, res) => {
-  //const { id } = req.params;
   const { id, name, email, password, role, company } = req.body
 
   if (id === undefined || id === null) {
@@ -173,6 +172,10 @@ exports.editEmployee = async (req, res) => {
   }
 
     const updatedEmployee = await User.findByIdAndUpdate(id, { name, email, password, role, company })
+
+    if (!updatedEmployee) {
+      throw createCustomError("Employee does not exist", 400);
+    }
   
   return res.status(201).json({
     message: "Employee updated",
@@ -183,4 +186,20 @@ exports.editEmployee = async (req, res) => {
 
 exports.deleteEmployee = async (req, res) => {
 
+  const { id } = req.params;
+
+  if (id === undefined || id === null) {
+    throw createCustomError("Invalid id provided", 400);
+  }
+
+  const deleteEmployee = await User.findByIdAndDelete(id);
+
+  if (!deleteEmployee) {
+    throw createCustomError("Employee does not exist", 400);
+  }
+
+  return res.status(201).json({
+    message: "Employee deleted",
+    deleteEmployee
+  });
 };
