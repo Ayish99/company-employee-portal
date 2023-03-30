@@ -29,7 +29,7 @@ exports.adminSignUp = async (req, res) => {
         newUser.email = email;
         newUser.password = password;
         newUser.role = role;
-        newUser.comapny = company;
+        newUser.company = company;
       
         await newUser.save();
       
@@ -57,7 +57,7 @@ exports.adminSignIn = async (req, res) => {
         throw createCustomError("Invalid password!", 400);
     }
 
-    const accessToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
@@ -69,7 +69,7 @@ exports.adminSignIn = async (req, res) => {
 
 exports.addNewEmployee = async (req, res) => {
 
-    const { name, email, role, company } = req.body;
+    const { name, email, password, role, company } = req.body;
 
     //validations for incoming object
     if (name === undefined || name === null) {
@@ -84,6 +84,10 @@ exports.addNewEmployee = async (req, res) => {
         throw createCustomError("invalid role provided", 400);
     }
 
+    if (password === undefined || password === null) {
+      throw createCustomError("invalid role provided", 400);
+  }
+
     if (company === undefined || company === null) {
         throw createCustomError("invalid company provided", 400);
       }
@@ -92,13 +96,15 @@ exports.addNewEmployee = async (req, res) => {
   
     newEmployee.name = name;
     newEmployee.email = email;
+    newEmployee.password = password;
     newEmployee.role = role;
-    newEmployee.comapny = company;
+    newEmployee.company = company;
   
     await newEmployee.save();
   
     return res.status(201).json({
       message: "New employee added!",
+      newEmployee
     });
   };
     
@@ -129,6 +135,7 @@ exports.addEmployeeToProject = async (req, res) => {
       
         return res.status(201).json({
           message: "Employee added to project",
+          addToProject
         });
 };
 

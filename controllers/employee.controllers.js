@@ -4,39 +4,39 @@ const jwt = require("jsonwebtoken");
 const { createCustomError } = require("../middlewares/customError");
 
 
-exports.employeeSignUp = async (req, res) => {
-        const { email, name, password, company } = req.body;
+// exports.employeeSignUp = async (req, res) => {
+//         const { email, name, password, company } = req.body;
 
-        if(email === undefined || email === null){
-            throw createCustomError("Invalid email!", 400);
-        }
+//         if(email === undefined || email === null){
+//             throw createCustomError("Invalid email!", 400);
+//         }
 
-        if(name === undefined || name === null){
-            throw createCustomError("Invalid name!", 400);
-        }
+//         if(name === undefined || name === null){
+//             throw createCustomError("Invalid name!", 400);
+//         }
 
-        if(password === undefined || password === null){
-            throw createCustomError("Invalid password!", 400);
-        }
+//         if(password === undefined || password === null){
+//             throw createCustomError("Invalid password!", 400);
+//         }
 
-            //const companyData = await company.find({_id: req.body}).populate('company');
+//             //const companyData = await company.find({_id: req.body}).populate('company');
            
 
-        const newUser = new User();
+//         const newUser = new User();
 
-        newUser.name = name;
-        newUser.email = email;
-        newUser.password = password;
-        newUser.role = "employee";
-        newUser.comapny = company;
+//         newUser.name = name;
+//         newUser.email = email;
+//         newUser.password = password;
+//         newUser.role = "employee";
+//         newUser.comapny = company;
       
-        await newUser.save();
+//         await newUser.save();
       
-        return res.status(201).json({
-          message: "Employee sign-up successfully!",
-          newUser
-        });
-}
+//         return res.status(201).json({
+//           message: "Employee sign-up successfully!",
+//           newUser
+//         });
+// }
 
 exports.employeeSignIn = async (req, res) => {
 
@@ -56,8 +56,8 @@ exports.employeeSignIn = async (req, res) => {
         throw createCustomError("Invalid password!", 400);
     }
 
-    const accessToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: '1s',
+    const accessToken = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
       });
 
     return res.status(201).json({
@@ -74,9 +74,9 @@ exports.viewProfile = async (req, res) => {
       throw createCustomError("Invalid ID", 400)
     }
 
-    const employeeProfile = await User.findById(id);
+    const employeeProfile = await User.findById(id).populate('company');
     if(employeeProfile){
-        res.status(201).send([employeeProfile, employeeProfile.name, employeeProfile.email, employeeProfile.comapny, employeeProfile.role]);
+        res.status(201).send([employeeProfile]);
     }else{
         throw createCustomError("User not found", 400);
     }

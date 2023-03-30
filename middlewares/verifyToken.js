@@ -22,6 +22,7 @@ const verifyAdmin = async (req, res, next) => {
     console.log(decoded);
 
     req.email = decoded.email;
+    req.role = decoded.role;
 
     if (req.role !== 'admin') {
       throw Error("access denied, you must be an admin!");

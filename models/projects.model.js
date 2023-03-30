@@ -11,10 +11,10 @@ const projectsSchema = mongoose.Schema({
         required: true
     },
 
-    employee: {
+    employees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    }
+    }]
 });
 
 module.exports = mongoose.model('Project', projectsSchema);
