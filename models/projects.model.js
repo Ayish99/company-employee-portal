@@ -11,6 +11,11 @@ const projectsSchema = mongoose.Schema({
         required: true
     },
 
+    employeeName: {
+        type: String,
+        required: true
+    },
+
     employees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

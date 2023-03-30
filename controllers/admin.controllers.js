@@ -111,7 +111,7 @@ exports.addNewEmployee = async (req, res) => {
 
 exports.addEmployeeToProject = async (req, res) => {
     
-    const { projectName, description, employee } = req.body;
+    const { projectName, description, employeeName } = req.body;
 
     if (projectName === undefined || projectName === null) {
       throw createCustomError("invalid project name provided", 400);
@@ -121,15 +121,20 @@ exports.addEmployeeToProject = async (req, res) => {
       throw createCustomError("invalid description provided", 400);
     }
 
-    if (employee === undefined || employee === null) {
+    if (employeeName === undefined || employeeName === null) {
         throw createCustomError("invalid employee provided", 400);
+    }
+
+    const employee = await User.findOne({name: employeeName});
+    if(!employee){
+        throw createCustomError("Employee does not exist!", 400);
     }
 
         const addToProject = new Project();
 
         addToProject.projectName = projectName;
         addToProject.description = description;
-        addToProject.employee = employee;
+        addToProject.employeeName = employeeName;
       
         await addToProject.save();
       
@@ -140,8 +145,7 @@ exports.addEmployeeToProject = async (req, res) => {
 };
 
 exports.removeEmployeeFromProject = async (req, res) => {
-    
-
+  
 };
 
 exports.editEmployee = async (req, res) => {
