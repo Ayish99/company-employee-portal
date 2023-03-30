@@ -17,7 +17,9 @@ exports.employeeSignIn = async (req, res) => {
         throw createCustomError("Invalid email!", 400);
     }
 
-    const isMatched = await user.comparePassword(password);
+    const hashedPassword = bcrypt.hash(password, 10);
+
+    const isMatched = await user.comparePassword(hashedPassword);
     if (!isMatched) {
         throw createCustomError("Invalid password!", 400);
     }

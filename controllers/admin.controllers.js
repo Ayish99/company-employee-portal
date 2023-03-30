@@ -97,7 +97,8 @@ exports.addNewEmployee = async (req, res) => {
 
   newEmployee.name = name;
   newEmployee.email = email;
-  newEmployee.password = password;
+  const hashedPassword = bcrypt.hash(password, 10);
+  newEmployee.password = hashedPassword;
   newEmployee.role = role;
   newEmployee.company = company;
 
