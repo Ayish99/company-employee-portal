@@ -40,7 +40,7 @@ exports.viewProfile = async (req, res) => {
         throw createCustomError("Invalid ID", 400)
     }
 
-    const employeeProfile = await User.findById(id).populate('company');
+    const employeeProfile = await User.findById(id).populate('company').projection('-password');
     if (employeeProfile) {
         res.status(201).send(employeeProfile);
     } else {
