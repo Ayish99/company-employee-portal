@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const Project = require("../models/projects.model");
 const jwt = require("jsonwebtoken");
 const { createCustomError } = require("../middlewares/customError");
+const { findByIdAndUpdate } = require("../models/user.model");
 
 
 exports.adminSignUp = async (req, res) => {
@@ -155,16 +156,28 @@ exports.removeEmployeeFromProject = async (req, res) => {
 
   if (!employee) {
     throw createCustomError("Employee does not exist", 400);
-
   }
 
   return res.status(201).json({
     message: "Employee removed from the project",
-    employee
+    removeEmployee
   });
 };
 
 exports.editEmployee = async (req, res) => {
+  //const { id } = req.params;
+  const { id, name, email, password, role, company } = req.body
+
+  if (id === undefined || id === null) {
+    throw createCustomError("Invalid id provided", 400);
+  }
+
+    const updatedEmployee = await User.findByIdAndUpdate(id, { name, email, password, role, company })
+  
+  return res.status(201).json({
+    message: "Employee updated",
+    updatedEmployee
+  });
 
 };
 
