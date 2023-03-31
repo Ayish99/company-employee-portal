@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const Company = require("../models/company.model");
+const Project = require("../models/projects.model");
 const jwt = require("jsonwebtoken");
 const { createCustomError } = require("../middlewares/customError");
 
@@ -17,9 +18,7 @@ exports.employeeSignIn = async (req, res) => {
         throw createCustomError("Invalid email!", 400);
     }
 
-    const hashedPassword = bcrypt.hash(password, 10);
-
-    const isMatched = await user.comparePassword(hashedPassword);
+    const isMatched = await user.comparePassword(password);
     if (!isMatched) {
         throw createCustomError("Invalid password!", 400);
     }
@@ -42,26 +41,58 @@ exports.viewProfile = async (req, res) => {
         throw createCustomError("Invalid ID", 400)
     }
 
-    const employeeProfile = await User.findById(id).populate('company').projection('-password');
-    if (employeeProfile) {
-        res.status(201).send(employeeProfile);
-    } else {
+    const employeeProfile = await User.findById(id, '-password').populate('company'.companyName);
+    if (!employeeProfile) {
         throw createCustomError("User not found", 400);
     }
+
+    res.status(201).send(employeeProfile);
 }
 
 exports.viewProjects = async (req, res) => {
+    const { employeeEmail } = req.params
 
+    if (employeeEmail === undefined || employeeEmail === "") {
+        throw createCustomError("Invalid email", 400)
+    }
 
+    const employee = await Project.findOne({ employeeEmail });
+    if (!employee) {
+      throw createCustomError("Employee does not exist!", 400);
+    } 
+    
+    const projects = await Project.find({employeeEmail }, 'projectName')
+    
+    return res.status(201).json({
+        message: "Your projects",
+        projects
+      });
 }
 
 exports.projectTeammates = async (req, res) => {
+    
+    const { projectName } = req.params
 
+    if (projectName === undefined || projectName === "") {
+        throw createCustomError("Invalid email", 400)
+    }
+
+    const projects = await Project.findOne({ projectName });
+    if (!projects) {
+      throw createCustomError("Invalid project!", 400);
+    } 
+
+    const teammates = await Project.find({ projectName }, 'employeeName')
+
+    return res.status(201).json({
+        message: "Project Team-mates",
+        teammates
+      });
 }
 
-exports.viewOtherEmployees = async (req, res) => {
+exports.allEmployees = async (req, res) => {
 
-    const allEmployees = await User.find();
+    const allEmployees = await User.find({}, 'name');
     if (allEmployees) {
         res.status(201).send(allEmployees);
     } else {

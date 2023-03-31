@@ -2,7 +2,6 @@ const User = require("../models/user.model");
 const Project = require("../models/projects.model");
 const jwt = require("jsonwebtoken");
 const { createCustomError } = require("../middlewares/customError");
-const { findByIdAndUpdate } = require("../models/user.model");
 
 
 exports.adminSignUp = async (req, res) => {
@@ -97,8 +96,7 @@ exports.addNewEmployee = async (req, res) => {
 
   newEmployee.name = name;
   newEmployee.email = email;
-  const hashedPassword = bcrypt.hash(password, 10);
-  newEmployee.password = hashedPassword;
+  newEmployee.password = password;
   newEmployee.role = role;
   newEmployee.company = company;
 
@@ -113,7 +111,7 @@ exports.addNewEmployee = async (req, res) => {
 
 exports.addEmployeeToProject = async (req, res) => {
 
-  const { projectName, description, employeeName } = req.body;
+  const { projectName, description, employeeName, employeeEmail } = req.body;
 
   if (projectName === undefined || projectName === null) {
     throw createCustomError("invalid project name provided", 400);
@@ -127,6 +125,10 @@ exports.addEmployeeToProject = async (req, res) => {
     throw createCustomError("invalid employee provided", 400);
   }
 
+  if (employeeEmail === undefined || employeeEmail === null) {
+    throw createCustomError("invalid employee provided", 400);
+  }
+
   const employee = await User.findOne({ name: employeeName });
   if (!employee) {
     throw createCustomError("Employee does not exist!", 400);
@@ -137,6 +139,7 @@ exports.addEmployeeToProject = async (req, res) => {
   addToProject.projectName = projectName;
   addToProject.description = description;
   addToProject.employeeName = employeeName;
+  addToProject.employeeEmail = employeeEmail;
 
   await addToProject.save();
 

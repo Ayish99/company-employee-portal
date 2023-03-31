@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({   
     name: {
         type: String,
         required: true

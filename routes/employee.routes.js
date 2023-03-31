@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const verifyEmployee = require('../middlewares/verifyToken')
+const verifyEmployee = require('../middlewares/verifyEmployee')
 const { employeeSignIn, viewProfile, viewProjects,
-        projectTeammates, viewOtherEmployees } = require('../controllers/employee.controllers')
+        projectTeammates, allEmployees } = require('../controllers/employee.controllers')
 
 router.get("/employee/signin", employeeSignIn);
 router.get("/employee/profile/:id",verifyEmployee, viewProfile);
-router.get("/employee/signin",verifyEmployee, viewProjects);
-router.get("/employee/signin",verifyEmployee, projectTeammates);
-router.get("/employee/all",verifyEmployee, viewOtherEmployees);
+router.get("/employee/viewProjects/:employeeEmail",verifyEmployee, viewProjects);
+router.get("/employee/projectTeammates/:projectName",verifyEmployee, projectTeammates);
+router.get("/employee/all",verifyEmployee, allEmployees);
 
 module.exports = router;

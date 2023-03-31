@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyAdmin = require('../middlewares/verifyToken')
+const verifyAdmin = require('../middlewares/verifyAdmin')
 const router = express.Router();
 const { adminSignUp, adminSignIn, addNewEmployee, addEmployeeToProject,
         removeEmployeeFromProject, editEmployee, deleteEmployee } = require('../controllers/admin.controllers')
