@@ -41,7 +41,9 @@ exports.addProject = async (req, res) => {
     const projects = await Project.find().populate('employees', '-password')
   
     return res.status(201).json({
-      message: "Successfully added!",
+      message: "Successfully fetched!",
       projects
     });
   }
+
+  

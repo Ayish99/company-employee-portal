@@ -12,14 +12,15 @@ const projectsSchema = mongoose.Schema({
     },
 
     employees: {
-       type: [ mongoose.Schema.Types.ObjectId ],
-        ref: "User",
-        default: []
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+        default: null
     },
 
-    company: {
-        
-    }
 });
 
 module.exports = mongoose.model('Project', projectsSchema);

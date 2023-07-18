@@ -13,10 +13,10 @@ const app = express();
 app.use(express.json());
 
 //APIs
-app.use("/api/admin", adminRoutes);
-app.use("/api/employee", employeeRoutes);
-app.use("/api/company", companyRoutes);
-app.use("/api/project", projectRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/employee", employeeRoutes);
+app.use("/api/v1/company", companyRoutes);
+app.use("/api/v1/project", projectRoutes);
 
 
 //Catch errors

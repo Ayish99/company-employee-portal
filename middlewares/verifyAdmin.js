@@ -3,9 +3,9 @@ const { createCustomError } = require("./customError");
 
 const verifyAdmin = async (req, res, next) => {
   try {
-    if (req.headers.authorization === undefined) {
-      throw createCustomError("access denied, token missing!", 400);
-    }
+    // if (req.headers.authorization === undefined) {
+    //   throw createCustomError("access denied, token missing!", 400);
+    // }
 
     // `Authorozation: Bearer <token>`
     if (req.headers.authorization.split(" ")[0] !== "Bearer") {

@@ -41,18 +41,18 @@ exports.adminSignUp = async (req, res) => {
     message: "Admin sign-up successfully, please sign-in!",
     newUser:{_id, email:userEmail}
   });
-}
+};
 
 exports.adminSignIn = async (req, res) => {
 
-  const { email, password, role } = req.body;
+  const { email, password } = req.body;
 
-  if (email === undefined && password === undefined && role === undefined) {
-    throw createCustomError("Email passwrod or role is required!", 400);
+  if (email === undefined && password === undefined ) {
+    throw createCustomError("Email or passwrod is required!", 400);
   }
 
-  if (email === null && password === null && role === null) {
-    throw createCustomError("Email passwrod or role is required!", 400);
+  if (email === null && password === null) {
+    throw createCustomError("Email or passwrod is required!", 400);
   }
 
   const user = await User.findOne({ email });
@@ -73,7 +73,7 @@ exports.adminSignIn = async (req, res) => {
     message: "Admin sign-in successful!",
     accessToken
   });
-}
+};
 
 exports.addNewEmployee = async (req, res) => {
 
@@ -124,7 +124,6 @@ exports.addNewEmployee = async (req, res) => {
     newEmployee
   });
 };
-
 
 exports.addEmployeeToProject = async (req, res) => {
 

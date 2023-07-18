@@ -5,7 +5,7 @@ const { adminSignUp, adminSignIn, addNewEmployee, addEmployeeToProject,
         removeEmployeeFromProject, editEmployee, deleteEmployee } = require('../controllers/admin.controllers')
 
 router.post("/signup", adminSignUp);
-router.get("/signin", adminSignIn);
+router.post("/signin", adminSignIn);
 router.post("/newEmployee",verifyAdmin, addNewEmployee);
 router.post("/newProject",verifyAdmin, addEmployeeToProject);
 router.delete("/removeEmployee/",verifyAdmin, removeEmployeeFromProject);

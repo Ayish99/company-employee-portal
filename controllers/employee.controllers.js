@@ -7,13 +7,13 @@ const { createCustomError } = require("../middlewares/customError");
 
 exports.employeeSignIn = async (req, res) => {
 
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
 
-    if (email === undefined && password === undefined && role === undefined) {
+    if (email === undefined && password === undefined) {
         throw createCustomError("Email or passwrod is required!", 400);
     }
 
-    if (email === null && password === null && role === null) {
+    if (email === null && password === null) {
         throw createCustomError("Email or passwrod is required!", 400);
     }
 

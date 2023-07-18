@@ -4,7 +4,7 @@ const verifyEmployee = require('../middlewares/verifyEmployee')
 const { employeeSignIn, viewProfile, viewProjects,
         projectTeammates, allEmployees } = require('../controllers/employee.controllers')
 
-router.get("/signin", employeeSignIn);
+router.post("/signin", employeeSignIn);
 router.get("/profile/:id",verifyEmployee, viewProfile);
 router.get("/viewProjects/:employeeEmail",verifyEmployee, viewProjects);
 router.get("/projectTeammates/:projectName",verifyEmployee, projectTeammates);
