@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const companySchema = mongoose.Schema({
     companyName: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     }
 });
 
-module.export = mongoose.model('Company', companySchema);
+module.exports = mongoose.model('Company', companySchema);

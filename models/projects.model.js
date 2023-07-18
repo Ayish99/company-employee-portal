@@ -11,20 +11,15 @@ const projectsSchema = mongoose.Schema({
         required: true
     },
 
-    employeeName: {
-        type: String,
-        required: true
+    employees: {
+       type: [ mongoose.Schema.Types.ObjectId ],
+        ref: "User",
+        default: []
     },
 
-    employeeEmail: {
-        type: String,
-        required: true
-    },
-
-    employees: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }]
+    company: {
+        
+    }
 });
 
 module.exports = mongoose.model('Project', projectsSchema);

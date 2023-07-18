@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const Project = require("../models/projects.model");
 const jwt = require("jsonwebtoken");
+const { ObjectId } = require ('mongoose')
 const { createCustomError } = require("../middlewares/customError");
 
 
@@ -25,17 +26,20 @@ exports.adminSignUp = async (req, res) => {
 
   const newUser = new User();
 
+
   newUser.name = name;
   newUser.email = email;
   newUser.password = password;
   newUser.role = role;
   newUser.company = company;
 
-  await newUser.save();
+ const user =  await newUser.save();
+ console.log(user);
+ const {_id, email:userEmail } = user
 
   return res.status(201).json({
     message: "Admin sign-up successfully, please sign-in!",
-    newUser
+    newUser:{_id, email:userEmail}
   });
 }
 
@@ -43,7 +47,11 @@ exports.adminSignIn = async (req, res) => {
 
   const { email, password, role } = req.body;
 
-  if (email === null || password === undefined || role === undefined) {
+  if (email === undefined && password === undefined && role === undefined) {
+    throw createCustomError("Email passwrod or role is required!", 400);
+  }
+
+  if (email === null && password === null && role === null) {
     throw createCustomError("Email passwrod or role is required!", 400);
   }
 
@@ -71,7 +79,6 @@ exports.addNewEmployee = async (req, res) => {
 
   const { name, email, password, role, company } = req.body;
 
-  //validations for incoming object
   if (name === undefined || name === null) {
     throw createCustomError("invalid name provided", 400);
   }
@@ -92,6 +99,14 @@ exports.addNewEmployee = async (req, res) => {
     throw createCustomError("invalid company provided", 400);
   }
 
+  const employeeExist = await User.findOne({email});
+
+  console.log(employeeExist);
+
+  if(employeeExist){
+    throw createCustomError("Employee already exists with provided email", 400);
+  }
+
   const newEmployee = new User();
 
   newEmployee.name = name;
@@ -100,7 +115,9 @@ exports.addNewEmployee = async (req, res) => {
   newEmployee.role = role;
   newEmployee.company = company;
 
-  await newEmployee.save();
+
+
+  await newEmployee.save(User.user, '-password');
 
   return res.status(201).json({
     message: "New employee added!",
@@ -111,56 +128,60 @@ exports.addNewEmployee = async (req, res) => {
 
 exports.addEmployeeToProject = async (req, res) => {
 
-  const { projectName, description, employeeName, employeeEmail } = req.body;
+  const { projectId, employeeId } = req.body;
 
-  if (projectName === undefined || projectName === null) {
-    throw createCustomError("invalid project name provided", 400);
-  }
+const projectExist = await Project.findById(projectId);
 
-  if (description === undefined || description === null) {
-    throw createCustomError("invalid description provided", 400);
-  }
+if(!projectExist){
+  throw createCustomError("Project does not exist!", 400);
+}
 
-  if (employeeName === undefined || employeeName === null) {
-    throw createCustomError("invalid employee provided", 400);
-  }
+const updatedProjectEmployees = [...projectExist.employees]
 
-  if (employeeEmail === undefined || employeeEmail === null) {
-    throw createCustomError("invalid employee provided", 400);
-  }
+const employeeExist = updatedProjectEmployees.includes(employeeId)
 
-  const employee = await User.findOne({ name: employeeName });
-  if (!employee) {
-    throw createCustomError("Employee does not exist!", 400);
-  }
+console.log(updatedProjectEmployees)
 
-  const addToProject = new Project();
+if(employeeExist === true){
+  throw createCustomError("Employee already exists!", 400);
+}
 
-  addToProject.projectName = projectName;
-  addToProject.description = description;
-  addToProject.employeeName = employeeName;
-  addToProject.employeeEmail = employeeEmail;
+updatedProjectEmployees.push(employeeId)
 
-  await addToProject.save();
+const updateProject = await Project.findByIdAndUpdate(projectId, { employees: updatedProjectEmployees }, {new: true});
+
 
   return res.status(201).json({
     message: "Employee added to project",
-    addToProject
+    updateProject
   });
 };
 
 exports.removeEmployeeFromProject = async (req, res) => {
-  const { id } = req.params;
+  const { employeeId, projectId } = req.body;
 
-  if (id === undefined || id === null) {
-    throw createCustomError("Invalid id provided", 400);
+  if (employeeId === undefined || employeeId === null) {
+    throw createCustomError("Invalid employee id provided", 400);
   }
 
-  const employee = await Project.findByIdAndDelete(id);
+  if (projectId === undefined || projectId === null) {
+    throw createCustomError("Invalid project id provided", 400);
+  }
 
-  if (!employee) {
+  const projectExist = await Project.findById(projectId);
+  
+  if (!projectExist) {
+    throw createCustomError("Project does not exist", 400);
+  }
+
+  const projectEmployees = [...projectExist.employees]
+  const employeeExist = projectEmployees.includes(employeeId)
+
+  if(!employeeExist){
     throw createCustomError("Employee does not exist", 400);
-  }
+  } 
+
+  const removeEmployee = await Project.findByIdAndDelete(employeeId);
 
   return res.status(201).json({
     message: "Employee removed from the project",
@@ -169,7 +190,8 @@ exports.removeEmployeeFromProject = async (req, res) => {
 };
 
 exports.editEmployee = async (req, res) => {
-  const { id, name, email, password, role, company } = req.body
+  const { name, email, password, role, company } = req.body
+  const { id } = req.params
 
   if (id === undefined || id === null) {
     throw createCustomError("Invalid id provided", 400);

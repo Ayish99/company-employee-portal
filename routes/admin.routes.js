@@ -4,13 +4,13 @@ const router = express.Router();
 const { adminSignUp, adminSignIn, addNewEmployee, addEmployeeToProject,
         removeEmployeeFromProject, editEmployee, deleteEmployee } = require('../controllers/admin.controllers')
 
-router.post("/admin/signup", adminSignUp);
-router.get("/admin/signin", adminSignIn);
-router.post("/admin/newEmployee",verifyAdmin, addNewEmployee);
-router.post("/admin/newProject",verifyAdmin, addEmployeeToProject);
-router.delete("/admin/removeEmployee/:id",verifyAdmin, removeEmployeeFromProject);
-router.put("/admin/editEmployee",verifyAdmin, editEmployee);
-router.delete("/admin/deleteEmployee/:id",verifyAdmin, deleteEmployee);
+router.post("/signup", adminSignUp);
+router.get("/signin", adminSignIn);
+router.post("/newEmployee",verifyAdmin, addNewEmployee);
+router.post("/newProject",verifyAdmin, addEmployeeToProject);
+router.delete("/removeEmployee/",verifyAdmin, removeEmployeeFromProject);
+router.put("/editEmployee/:id",verifyAdmin, editEmployee);
+router.delete("/deleteEmployee/:id",verifyAdmin, deleteEmployee);
 
 
 module.exports = router;

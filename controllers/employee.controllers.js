@@ -9,7 +9,11 @@ exports.employeeSignIn = async (req, res) => {
 
     const { email, password, role } = req.body;
 
-    if (email === null || password === undefined || role === undefined) {
+    if (email === undefined && password === undefined && role === undefined) {
+        throw createCustomError("Email or passwrod is required!", 400);
+    }
+
+    if (email === null && password === null && role === null) {
         throw createCustomError("Email or passwrod is required!", 400);
     }
 
@@ -58,19 +62,19 @@ exports.viewProjects = async (req, res) => {
 
     const employee = await Project.findOne({ employeeEmail });
     if (!employee) {
-      throw createCustomError("Employee does not exist!", 400);
-    } 
-    
-    const projects = await Project.find({employeeEmail }, 'projectName')
-    
+        throw createCustomError("Employee does not exist!", 400);
+    }
+
+    const projects = await Project.find({ employeeEmail }, 'projectName')
+
     return res.status(201).json({
         message: "Your projects",
         projects
-      });
+    });
 }
 
 exports.projectTeammates = async (req, res) => {
-    
+
     const { projectName } = req.params
 
     if (projectName === undefined || projectName === "") {
@@ -79,20 +83,20 @@ exports.projectTeammates = async (req, res) => {
 
     const projects = await Project.findOne({ projectName });
     if (!projects) {
-      throw createCustomError("Invalid project!", 400);
-    } 
+        throw createCustomError("Invalid project!", 400);
+    }
 
     const teammates = await Project.find({ projectName }, 'employeeName')
 
     return res.status(201).json({
         message: "Project Team-mates",
         teammates
-      });
+    });
 }
 
 exports.allEmployees = async (req, res) => {
 
-    const allEmployees = await User.find({}, 'name');
+    const allEmployees = await User.find({}, 'name company').populate('company');
     if (allEmployees) {
         res.status(201).send(allEmployees);
     } else {

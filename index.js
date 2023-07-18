@@ -4,6 +4,8 @@ const connectTODB = require('./utils/db');
 const customErrorHandler = require("./middlewares/customErrorHandler");
 const adminRoutes = require("./routes/admin.routes");
 const employeeRoutes = require("./routes/employee.routes");
+const companyRoutes = require("./routes/company.routes");
+const projectRoutes = require("./routes/project.routes");
 
 
 const app = express();
@@ -11,8 +13,11 @@ const app = express();
 app.use(express.json());
 
 //APIs
-app.use("/api/company", adminRoutes);
-app.use("/api/company", employeeRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/employee", employeeRoutes);
+app.use("/api/company", companyRoutes);
+app.use("/api/project", projectRoutes);
+
 
 //Catch errors
 app.use(customErrorHandler);
